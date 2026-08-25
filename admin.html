@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tracking Control</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101820;
+  color: white;
+}
+
+header {
+  background: #17232e;
+  padding: 20px;
+  border-bottom: 2px solid #d4a017;
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+header p {
+  color: #bbc7ce;
+  margin-bottom: 0;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: #17232e;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #f0c34e;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #53616b;
+  background: #101820;
+  color: white;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 100px;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #d4a017;
+  color: #101820;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.note {
+  color: #bbc7ce;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Tracking Control</h1>
+  <p>Private Shipment Management System</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Create / Update Shipment</h2>
+
+    <label>Tracking Number</label>
+    <input type="text" placeholder="Example: UPS123456789">
+
+    <label>Customer Name</label>
+    <input type="text" placeholder="Enter customer name">
+
+    <label>Shipment Status</label>
+    <select>
+      <option>Shipment Created</option>
+      <option>Picked Up</option>
+      <option>In Transit</option>
+      <option>Out for Delivery</option>
+      <option>Delivered</option>
+      <option>Delayed</option>
+    </select>
+
+    <label>Current Location</label>
+    <input type="text" placeholder="Example: Milan, Italy">
+
+    <label>Destination</label>
+    <input type="text" placeholder="Example: Lagos, Nigeria">
+
+    <label>Shipment Update</label>
+    <textarea placeholder="Enter the latest shipment update..."></textarea>
+
+    <label>Latitude (optional)</label>
+    <input type="text" placeholder="Example: 45.4642">
+
+    <label>Longitude (optional)</label>
+    <input type="text" placeholder="Example: 9.1900">
+
+    <button type="button">Save Shipment</button>
+  </div>
+
+  <p class="note">
+    Private control panel. Shipment information should only be managed by authorized users.
+  </p>
+
+</div>
+
+</body>
+</html>
