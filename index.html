@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tracking Control</title>
+<title>Tracking Control Admin</title>
 
 <style>
 * {
@@ -26,16 +26,16 @@ header {
 
 h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 26px;
 }
 
 header p {
-  margin-bottom: 0;
   color: #bfc7ce;
+  margin-bottom: 0;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 700px;
   margin: auto;
   padding: 20px;
 }
@@ -43,33 +43,33 @@ header p {
 .card {
   background: #17232e;
   padding: 20px;
-  margin-bottom: 20px;
   border-radius: 12px;
+  margin-bottom: 20px;
 }
 
 h2 {
   margin-top: 0;
+  color: #d4a017;
 }
 
 label {
   display: block;
   margin-top: 15px;
-  margin-bottom: 7px;
-  font-weight: bold;
+  margin-bottom: 6px;
 }
 
 input, select, textarea {
   width: 100%;
-  padding: 14px;
+  padding: 13px;
+  border: 1px solid #40505c;
   border-radius: 8px;
-  border: 1px solid #52606d;
   background: #101820;
   color: white;
   font-size: 16px;
 }
 
 textarea {
-  min-height: 90px;
+  height: 100px;
 }
 
 button {
@@ -79,7 +79,7 @@ button {
   border: none;
   border-radius: 8px;
   background: #d4a017;
-  color: #111;
+  color: #101820;
   font-size: 17px;
   font-weight: bold;
 }
@@ -95,7 +95,7 @@ button {
 
 <header>
   <h1>Tracking Control</h1>
-  <p>Private shipment management dashboard</p>
+  <p>Private shipment management system</p>
 </header>
 
 <div class="container">
@@ -104,51 +104,47 @@ button {
     <h2>Create / Update Shipment</h2>
 
     <label>Tracking Number</label>
-    <input type="text" placeholder="Enter tracking number">
+    <input type="text" id="trackingNumber" placeholder="Enter tracking number">
 
-    <label>Sender Name</label>
-    <input type="text" placeholder="Enter sender name">
-
-    <label>Receiver Name</label>
-    <input type="text" placeholder="Enter receiver name">
-
-    <label>Current Location</label>
-    <input type="text" placeholder="Example: London, United Kingdom">
+    <label>Customer Name</label>
+    <input type="text" id="customerName" placeholder="Enter customer name">
 
     <label>Shipment Status</label>
-    <select>
+    <select id="status">
       <option>Shipment Created</option>
       <option>Package Received</option>
       <option>In Transit</option>
-      <option>At Distribution Center</option>
       <option>Out for Delivery</option>
       <option>Delivered</option>
-      <option>Delivery Exception</option>
     </select>
 
-    <label>Shipment Update</label>
-    <textarea placeholder="Enter the latest shipment update"></textarea>
+    <label>Current Location</label>
+    <input type="text" id="location" placeholder="Example: Milan, Italy">
 
-    <button>Save Shipment</button>
+    <label>Destination</label>
+    <input type="text" id="destination" placeholder="Example: Lagos, Nigeria">
+
+    <label>Shipment Update</label>
+    <textarea id="update" placeholder="Enter the latest shipment update"></textarea>
+
+    <button onclick="saveShipment()">Save Shipment</button>
   </div>
 
   <div class="card">
-    <h2>Route / Map Position</h2>
-
-    <label>Latitude</label>
-    <input type="text" placeholder="Example: 51.5074">
-
-    <label>Longitude</label>
-    <input type="text" placeholder="Example: -0.1278">
-
+    <h2>Admin Notice</h2>
     <p class="notice">
-      Map integration will be connected in the next step.
+      This is the private shipment configuration page.
+      Do not use this to represent simulated locations as real live GPS tracking.
     </p>
-
-    <button>Update Package Position</button>
   </div>
 
 </div>
+
+<script>
+function saveShipment() {
+  alert("Shipment details saved. Database connection will be added next.");
+}
+</script>
 
 </body>
 </html>
