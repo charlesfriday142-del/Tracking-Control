@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Tracking Control Admin</title>
+  <title>Track Your Shipment</title>
 
   <style>
     * {
@@ -22,16 +22,17 @@
       background: #17232e;
       padding: 20px;
       border-bottom: 2px solid #d4a017;
+      text-align: center;
     }
 
     h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 28px;
     }
 
     header p {
       color: #bfc7ce;
-      margin-bottom: 0;
+      margin: 8px 0 0;
     }
 
     .container {
@@ -54,16 +55,13 @@
 
     label {
       display: block;
-      margin-top: 15px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: bold;
     }
 
-    input,
-    select,
-    textarea {
+    input {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       border: 1px solid #40505c;
       border-radius: 8px;
       background: #101820;
@@ -71,14 +69,9 @@
       font-size: 16px;
     }
 
-    textarea {
-      height: 100px;
-      resize: vertical;
-    }
-
     button {
       width: 100%;
-      margin-top: 20px;
+      margin-top: 15px;
       padding: 15px;
       border: none;
       border-radius: 8px;
@@ -91,6 +84,7 @@
 
     button:disabled {
       opacity: 0.6;
+      cursor: not-allowed;
     }
 
     #message {
@@ -100,22 +94,61 @@
       border-radius: 8px;
     }
 
-    .success {
-      display: block !important;
-      background: #173d2a;
-      color: #b9f6ca;
-    }
-
     .error {
       display: block !important;
       background: #4a1f25;
       color: #ffc4c8;
     }
 
-    .notice {
+    .loading {
+      display: block !important;
+      background: #243440;
+      color: #dbe8f0;
+    }
+
+    #result {
+      display: none;
+    }
+
+    .status-box {
+      padding: 14px;
+      border-radius: 8px;
+      background: #101820;
+      border-left: 4px solid #d4a017;
+      margin-bottom: 18px;
+    }
+
+    .status-box strong {
+      display: block;
+      color: #d4a017;
+      margin-bottom: 5px;
+    }
+
+    .info-row {
+      border-bottom: 1px solid #40505c;
+      padding: 14px 0;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
       color: #bfc7ce;
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 17px;
+      word-break: break-word;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #bfc7ce;
+      font-size: 13px;
+      margin-top: 25px;
     }
   </style>
 </head>
@@ -123,139 +156,305 @@
 <body>
 
 <header>
-  <h1>Tracking Control</h1>
-  <p>Private shipment management system</p>
+  <h1>Shipment Tracking</h1>
+  <p>Enter your tracking number to view your shipment status</p>
 </header>
 
 <div class="container">
 
   <div class="card">
-    <h2>Create / Update Shipment</h2>
 
-    <label>Tracking Number</label>
-    <input type="text" id="trackingNumber" placeholder="Enter tracking number">
+    <h2>Track Shipment</h2>
 
-    <label>Shipment Status</label>
-    <select id="status">
-      <option value="Shipment Created">Shipment Created</option>
-      <option value="Package Received">Package Received</option>
-      <option value="In Transit">In Transit</option>
-      <option value="Out for Delivery">Out for Delivery</option>
-      <option value="Delivered">Delivered</option>
-    </select>
+    <label for="trackingNumber">Tracking Number</label>
 
-    <label>Current Location</label>
-    <input type="text" id="location" placeholder="Example: New York, USA">
+    <input
+      type="text"
+      id="trackingNumber"
+      placeholder="Enter your tracking number"
+    >
 
-    <label>Destination</label>
-    <input type="text" id="destination" placeholder="Enter destination">
-
-    <label>Shipment Update</label>
-    <textarea id="update" placeholder="Enter the latest shipment update"></textarea>
-
-    <button id="saveButton" onclick="saveShipment()">
-      Save Shipment
+    <button
+      id="trackButton"
+      onclick="trackShipment()"
+    >
+      Track Shipment
     </button>
 
     <div id="message"></div>
+
   </div>
 
-  <div class="card">
-    <h2>Admin Notice</h2>
-    <p class="notice">
-      This is your private shipment management page.
-    </p>
+
+  <div class="card" id="result">
+
+    <h2>Shipment Details</h2>
+
+    <div class="status-box">
+      <strong>Current Status</strong>
+      <span id="resultStatus"></span>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Tracking Number</div>
+      <div class="info-value" id="resultTrackingNumber"></div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Current Location</div>
+      <div class="info-value" id="resultLocation"></div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Destination</div>
+      <div class="info-value" id="resultDestination"></div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Latest Shipment Update</div>
+      <div class="info-value" id="resultUpdate"></div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-label">Last Updated</div>
+      <div class="info-value" id="resultLastUpdated"></div>
+    </div>
+
   </div>
+
+
+  <p class="footer-note">
+    Please enter the tracking number provided for your shipment.
+  </p>
 
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-const SUPABASE_URL = "https://ojghoyeyhewapabbdtuc.supabase.co";
+
+/* SUPABASE CONNECTION */
+
+const SUPABASE_URL =
+  "https://ojghoyeyhewapabbdtuc.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_WG8kcXceyGv1fhdSLEZKJw_ckl73g-i";
+  "sb_publishable_WG8kcXceyGv1fhdSLEZKJw_ckl73g-i";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
 
 function showMessage(text, type) {
-  const message = document.getElementById("message");
+
+  const message =
+    document.getElementById("message");
+
   message.textContent = text;
+
   message.className = type;
+
 }
 
-async function saveShipment() {
-  const saveButton = document.getElementById("saveButton");
+
+function hideMessage() {
+
+  const message =
+    document.getElementById("message");
+
+  message.textContent = "";
+
+  message.className = "";
+
+}
+
+
+/* TRACK SHIPMENT */
+
+async function trackShipment() {
+
+  const trackButton =
+    document.getElementById("trackButton");
 
   const trackingNumber =
-    document.getElementById("trackingNumber").value.trim();
+    document
+      .getElementById("trackingNumber")
+      .value
+      .trim();
 
-  const status =
-    document.getElementById("status").value;
 
-  const currentLocation =
-    document.getElementById("location").value.trim();
+  /* HIDE OLD RESULT */
 
-  const destination =
-    document.getElementById("destination").value.trim();
+  document
+    .getElementById("result")
+    .style
+    .display = "none";
 
-  const shipmentUpdate =
-    document.getElementById("update").value.trim();
+
+  /* CHECK TRACKING NUMBER */
 
   if (!trackingNumber) {
-    showMessage("Please enter a tracking number.", "error");
-    return;
-  }
 
-  if (!currentLocation) {
-    showMessage("Please enter the current location.", "error");
-    return;
-  }
-
-  if (!destination) {
-    showMessage("Please enter the destination.", "error");
-    return;
-  }
-
-  saveButton.disabled = true;
-  saveButton.textContent = "Saving...";
-
-  const { error } = await supabaseClient
-    .from("shipments")
-    .insert({
-      tracking_number: trackingNumber,
-      status: status,
-      current_location: currentLocation,
-      destination: destination,
-      shipment_update: shipmentUpdate,
-      last_updated: new Date().toISOString()
-    });
-
-  if (error) {
-    console.error(error);
     showMessage(
-      "Could not save shipment: " + error.message,
+      "Please enter a tracking number.",
       "error"
     );
-  } else {
-    showMessage(
-      "Shipment saved successfully!",
-      "success"
-    );
 
-    document.getElementById("trackingNumber").value = "";
-    document.getElementById("location").value = "";
-    document.getElementById("destination").value = "";
-    document.getElementById("update").value = "";
+    return;
+
   }
 
-  saveButton.disabled = false;
-  saveButton.textContent = "Save Shipment";
+
+  /* SHOW LOADING */
+
+  showMessage(
+    "Searching for your shipment...",
+    "loading"
+  );
+
+  trackButton.disabled = true;
+
+  trackButton.textContent =
+    "Searching...";
+
+
+  /* SEARCH SUPABASE */
+
+  const { data, error } =
+    await supabaseClient
+      .from("shipments")
+      .select("*")
+      .eq(
+        "tracking_number",
+        trackingNumber
+      )
+      .maybeSingle();
+
+
+  trackButton.disabled = false;
+
+  trackButton.textContent =
+    "Track Shipment";
+
+
+  /* HANDLE ERROR */
+
+  if (error) {
+
+    console.error(error);
+
+    showMessage(
+      "Unable to retrieve shipment information.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  /* NO SHIPMENT FOUND */
+
+  if (!data) {
+
+    showMessage(
+      "No shipment was found with that tracking number.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  /* HIDE MESSAGE */
+
+  hideMessage();
+
+
+  /* DISPLAY SHIPMENT */
+
+  document
+    .getElementById("resultTrackingNumber")
+    .textContent =
+    data.tracking_number || "-";
+
+
+  document
+    .getElementById("resultStatus")
+    .textContent =
+    data.status || "-";
+
+
+  document
+    .getElementById("resultLocation")
+    .textContent =
+    data.current_location || "-";
+
+
+  document
+    .getElementById("resultDestination")
+    .textContent =
+    data.destination || "-";
+
+
+  document
+    .getElementById("resultUpdate")
+    .textContent =
+    data.shipment_update || "No update available.";
+
+
+  /* FORMAT DATE */
+
+  if (data.last_updated) {
+
+    const date =
+      new Date(data.last_updated);
+
+    document
+      .getElementById("resultLastUpdated")
+      .textContent =
+      date.toLocaleString();
+
+  } else {
+
+    document
+      .getElementById("resultLastUpdated")
+      .textContent = "-";
+
+  }
+
+
+  /* SHOW RESULT */
+
+  document
+    .getElementById("result")
+    .style
+    .display = "block";
+
 }
+
+
+/* ALLOW ENTER KEY */
+
+document
+  .getElementById("trackingNumber")
+  .addEventListener(
+    "keydown",
+    function(event) {
+
+      if (event.key === "Enter") {
+        trackShipment();
+      }
+
+    }
+  );
+
 </script>
 
 </body>
