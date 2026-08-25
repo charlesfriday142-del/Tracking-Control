@@ -1,94 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tracking Control Admin</title>
+  <title>Tracking Control Admin</title>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #101820;
-  color: white;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101820;
+      color: white;
+    }
 
-header {
-  background: #17232e;
-  padding: 20px;
-  border-bottom: 2px solid #d4a017;
-}
+    header {
+      background: #17232e;
+      padding: 20px;
+      border-bottom: 2px solid #d4a017;
+    }
 
-h1 {
-  margin: 0;
-  font-size: 26px;
-}
+    h1 {
+      margin: 0;
+      font-size: 26px;
+    }
 
-header p {
-  color: #bfc7ce;
-  margin-bottom: 0;
-}
+    header p {
+      color: #bfc7ce;
+      margin-bottom: 0;
+    }
 
-.container {
-  max-width: 700px;
-  margin: auto;
-  padding: 20px;
-}
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
 
-.card {
-  background: #17232e;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
+    .card {
+      background: #17232e;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
 
-h2 {
-  margin-top: 0;
-  color: #d4a017;
-}
+    h2 {
+      margin-top: 0;
+      color: #d4a017;
+    }
 
-label {
-  display: block;
-  margin-top: 15px;
-  margin-bottom: 6px;
-}
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
 
-input, select, textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #40505c;
-  border-radius: 8px;
-  background: #101820;
-  color: white;
-  font-size: 16px;
-}
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #40505c;
+      border-radius: 8px;
+      background: #101820;
+      color: white;
+      font-size: 16px;
+    }
 
-textarea {
-  height: 100px;
-}
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
 
-button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 15px;
-  border: none;
-  border-radius: 8px;
-  background: #d4a017;
-  color: #101820;
-  font-size: 17px;
-  font-weight: bold;
-}
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #d4a017;
+      color: #101820;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.notice {
-  color: #bfc7ce;
-  font-size: 14px;
-}
-</style>
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    #message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .success {
+      display: block !important;
+      background: #173d2a;
+      color: #b9f6ca;
+    }
+
+    .error {
+      display: block !important;
+      background: #4a1f25;
+      color: #ffc4c8;
+    }
+
+    .notice {
+      color: #bfc7ce;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 
 <body>
@@ -106,43 +135,126 @@ button {
     <label>Tracking Number</label>
     <input type="text" id="trackingNumber" placeholder="Enter tracking number">
 
-    <label>Customer Name</label>
-    <input type="text" id="customerName" placeholder="Enter customer name">
-
     <label>Shipment Status</label>
     <select id="status">
-      <option>Shipment Created</option>
-      <option>Package Received</option>
-      <option>In Transit</option>
-      <option>Out for Delivery</option>
-      <option>Delivered</option>
+      <option value="Shipment Created">Shipment Created</option>
+      <option value="Package Received">Package Received</option>
+      <option value="In Transit">In Transit</option>
+      <option value="Out for Delivery">Out for Delivery</option>
+      <option value="Delivered">Delivered</option>
     </select>
 
     <label>Current Location</label>
-    <input type="text" id="location" placeholder="Example: Milan, Italy">
+    <input type="text" id="location" placeholder="Example: New York, USA">
 
     <label>Destination</label>
-    <input type="text" id="destination" placeholder="Example: Lagos, Nigeria">
+    <input type="text" id="destination" placeholder="Enter destination">
 
     <label>Shipment Update</label>
     <textarea id="update" placeholder="Enter the latest shipment update"></textarea>
 
-    <button onclick="saveShipment()">Save Shipment</button>
+    <button id="saveButton" onclick="saveShipment()">
+      Save Shipment
+    </button>
+
+    <div id="message"></div>
   </div>
 
   <div class="card">
     <h2>Admin Notice</h2>
     <p class="notice">
-      This is the private shipment configuration page.
-      Do not use this to represent simulated locations as real live GPS tracking.
+      This is your private shipment management page.
     </p>
   </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-function saveShipment() {
-  alert("Shipment details saved. Database connection will be added next.");
+const SUPABASE_URL = "https://ojghoyeyhewapabbdtuc.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_WG8kcXceyGv1fhdSLEZKJw_ckl73g-i";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+function showMessage(text, type) {
+  const message = document.getElementById("message");
+  message.textContent = text;
+  message.className = type;
+}
+
+async function saveShipment() {
+  const saveButton = document.getElementById("saveButton");
+
+  const trackingNumber =
+    document.getElementById("trackingNumber").value.trim();
+
+  const status =
+    document.getElementById("status").value;
+
+  const currentLocation =
+    document.getElementById("location").value.trim();
+
+  const destination =
+    document.getElementById("destination").value.trim();
+
+  const shipmentUpdate =
+    document.getElementById("update").value.trim();
+
+  if (!trackingNumber) {
+    showMessage("Please enter a tracking number.", "error");
+    return;
+  }
+
+  if (!currentLocation) {
+    showMessage("Please enter the current location.", "error");
+    return;
+  }
+
+  if (!destination) {
+    showMessage("Please enter the destination.", "error");
+    return;
+  }
+
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving...";
+
+  const { error } = await supabaseClient
+    .from("shipments")
+    .insert({
+      tracking_number: trackingNumber,
+      status: status,
+      current_location: currentLocation,
+      destination: destination,
+      shipment_update: shipmentUpdate,
+      last_updated: new Date().toISOString()
+    });
+
+  if (error) {
+    console.error(error);
+    showMessage(
+      "Could not save shipment: " + error.message,
+      "error"
+    );
+  } else {
+    showMessage(
+      "Shipment saved successfully!",
+      "success"
+    );
+
+    document.getElementById("trackingNumber").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("destination").value = "";
+    document.getElementById("update").value = "";
+  }
+
+  saveButton.disabled = false;
+  saveButton.textContent = "Save Shipment";
 }
 </script>
 
