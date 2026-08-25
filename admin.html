@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tracking Control Admin</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101820;
+  color: white;
+}
+
+header {
+  background: #17232e;
+  padding: 20px;
+  border-bottom: 2px solid #d4a017;
+}
+
+h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+header p {
+  color: #bbc7ce;
+  margin-bottom: 0;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: #17232e;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #f0c34e;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #53616b;
+  background: #101820;
+  color: white;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #d4a017;
+  color: #101820;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#message {
+  display: none;
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.success {
+  display: block !important;
+  background: #173d2a;
+  color: #b9f6ca;
+}
+
+.error {
+  display: block !important;
+  background: #4a1f25;
+  color: #ffc4c8;
+}
+
+.note {
+  color: #bbc7ce;
+  font-size: 14px;
+  line-height: 1.5;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Tracking Control</h1>
+  <p>Shipment Management System</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+
+    <h2>Create / Update Shipment</h2>
+
+    <label for="trackingNumber">Tracking Number</label>
+    <input
+      type="text"
+      id="trackingNumber"
+      placeholder="Example: TRK123456789"
+    >
+
+    <label for="customerName">Customer Name</label>
+    <input
+      type="text"
+      id="customerName"
+      placeholder="Enter customer name"
+    >
+
+    <label for="status">Shipment Status</label>
+    <select id="status">
+      <option value="Shipment Created">Shipment Created</option>
+      <option value="Picked Up">Picked Up</option>
+      <option value="In Transit">In Transit</option>
+      <option value="Out for Delivery">Out for Delivery</option>
+      <option value="Delivered">Delivered</option>
+      <option value="Delayed">Delayed</option>
+    </select>
+
+    <label for="location">Current Location</label>
+    <input
+      type="text"
+      id="location"
+      placeholder="Example: Milan, Italy"
+    >
+
+    <label for="destination">Destination</label>
+    <input
+      type="text"
+      id="destination"
+      placeholder="Example: Paris, France"
+    >
+
+    <label for="shipmentUpdate">Shipment Update</label>
+    <textarea
+      id="shipmentUpdate"
+      placeholder="Enter the latest shipment update..."
+    ></textarea>
+
+    <label for="latitude">Latitude (Optional)</label>
+    <input
+      type="number"
+      step="any"
+      id="latitude"
+      placeholder="Example: 45.4642"
+    >
+
+    <label for="longitude">Longitude (Optional)</label>
+    <input
+      type="number"
+      step="any"
+      id="longitude"
+      placeholder="Example: 9.1900"
+    >
+
+    <button
+      type="button"
+      id="saveButton"
+      onclick="saveShipment()"
+    >
+      Save Shipment
+    </button>
+
+    <div id="message"></div>
+
+  </div>
+
+  <p class="note">
+    Only authorized users should manage shipment information.
+  </p>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+"https://ojghoyeyhewapabbdtuc.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_WG8kcXceyGv1fhdSLEZKJw_ckl73g-i";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+function showMessage(text, type) {
+  const message = document.getElementById("message");
+  message.textContent = text;
+  message.className = type;
+}
+
+async function saveShipment() {
+
+  const saveButton =
+    document.getElementById("saveButton");
+
+  const trackingNumber =
+    document.getElementById("trackingNumber").value.trim();
+
+  const customerName =
+    document.getElementById("customerName").value.trim();
+
+  const status =
+    document.getElementById("status").value;
+
+  const location =
+    document.getElementById("location").value.trim();
+
+  const destination =
+    document.getElementById("destination").value.trim();
+
+  const shipmentUpdate =
+    document.getElementById("shipmentUpdate").value.trim();
+
+  const latitude =
+    document.getElementById("latitude").value.trim();
+
+  const longitude =
+    document.getElementById("longitude").value.trim();
+
+  if (!trackingNumber) {
+    showMessage(
+      "Please enter a tracking number.",
+      "error"
+    );
+    return;
+  }
+
+  if (!customerName) {
+    showMessage(
+      "Please enter the customer name.",
+      "error"
+    );
+    return;
+  }
+
+  if (!location) {
+    showMessage(
+      "Please enter the current location.",
+      "error"
+    );
+    return;
+  }
+
+  if (!destination) {
+    showMessage(
+      "Please enter the destination.",
+      "error"
+    );
+    return;
+  }
+
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving...";
+
+  const { data: existingShipment, error: searchError } =
+    await supabaseClient
+      .from("shipments")
+      .select("id")
+      .eq("tracking_number", trackingNumber)
+      .maybeSingle();
+
+  if (searchError) {
+
+    console.error(searchError);
+
+    showMessage(
+      "Error: " + searchError.message,
+      "error"
+    );
+
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Shipment";
+    return;
+  }
+
+  const shipmentData = {
+    tracking_number: trackingNumber,
+    customer_name: customerName,
+    status: status,
+    current_location: location,
+    destination: destination,
+    shipment_update: shipmentUpdate,
+    latitude: latitude ? Number(latitude) : null,
+    longitude: longitude ? Number(longitude) : null,
+    last_updated: new Date().toISOString()
+  };
+
+  let error;
+
+  if (existingShipment) {
+
+    const result =
+      await supabaseClient
+        .from("shipments")
+        .update(shipmentData)
+        .eq("tracking_number", trackingNumber);
+
+    error = result.error;
+
+  } else {
+
+    const result =
+      await supabaseClient
+        .from("shipments")
+        .insert([shipmentData]);
+
+    error = result.error;
+  }
+
+  if (error) {
+
+    console.error(error);
+
+    showMessage(
+      "Could not save shipment: " + error.message,
+      "error"
+    );
+
+  } else {
+
+    showMessage(
+      existingShipment
+        ? "Shipment updated successfully!"
+        : "Shipment created successfully!",
+      "success"
+    );
+
+    document.getElementById("trackingNumber").value = "";
+    document.getElementById("customerName").value = "";
+    document.getElementById("status").value = "Shipment Created";
+    document.getElementById("location").value = "";
+    document.getElementById("destination").value = "";
+    document.getElementById("shipmentUpdate").value = "";
+    document.getElementById("latitude").value = "";
+    document.getElementById("longitude").value = "";
+  }
+
+  saveButton.disabled = false;
+  saveButton.textContent = "Save Shipment";
+}
+
+</script>
+
+</body>
+</html>
